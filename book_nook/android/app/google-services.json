@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "498301936472",
+    "project_id": "booknook-leury",
+    "storage_bucket": "booknook-leury.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498301936472:android:37d8032d74917811497b2d",
+        "android_client_info": {
+          "package_name": "com.example.book_nook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498301936472-rcrgg9o6c2q353oqhs11mgjv9n28ud4t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZLUrMlhj2ngCUOGdeiBo56ereN30nzW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498301936472-rcrgg9o6c2q353oqhs11mgjv9n28ud4t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
