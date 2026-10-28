@@ -5,33 +5,52 @@ class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  //metodo para substituir o cloud Functions, já que não tenho cartão de crédito e não consigui utilizar.
+  //remove o livro da estante do usuário
+  Future<void> removerLivro(String bookId) async {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('books')
+        .doc(bookId)
+        .delete();
+  }
+
+  //atualiza a página atual em que o usuário parou
+  Future<void> atualizarPaginaAtual(String bookId, int paginaAtual) async {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('books')
+        .doc(bookId)
+        .update({'paginaAtual': paginaAtual});
+  }
+
+  //marca como lido e muda as estasticas, somando com as que já existe
   Future<void> marcarLivroComoLido(String bookId, int paginas) async {
     final userId = _auth.currentUser?.uid;
     if (userId == null) return;
 
-    //referências para os documentos no Firestore
     final bookRef = _db.collection('users').doc(userId).collection('books').doc(bookId);
     final statsRef = _db.collection('users').doc(userId).collection('stats').doc('geral');
 
-    //o WriteBatch garante que quando um livro for atualizado, as estatisticas também sejam, isso simultaneamente.
-    // Se uma falhar, a outra é cancelada.
     WriteBatch batch = _db.batch();
 
-    //atualiza o status do livro para "Lidos"
-    batch.update(bookRef, {'status': 'Lidos'});
+    batch.update(bookRef, {
+      'status': 'Lidos',
+      'paginaAtual': paginas,
+    });
 
-    //incrementa os contadores de leitura no documento de estatísticas
     batch.set(statsRef, {
       'livrosLidos': FieldValue.increment(1),
       'paginasLidas': FieldValue.increment(paginas),
-    }, SetOptions(merge: true)); //cria o documento se for a primeira vez
+    }, SetOptions(merge: true));
 
-    
-    try {
-      await batch.commit();
-    } catch (e) {
-      throw Exception('Erro ao atualizar estatísticas: $e');
-    }
+    await batch.commit();
   }
 }
